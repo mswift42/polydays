@@ -20,3 +20,17 @@ type Task struct {
 	Scheduled time.Time `json:"scheduled"`
 	Status    string    `json:"done"`
 }
+
+func tasklistkey(c appengine.Context) *datastore.Key {
+	return datastore.NewKey(c, "Task", "default_tasklist", 0, nil)
+}
+
+// key - for a given Task t, return the corresponding key to the intId from
+// the datastore. If no Id has been stored, let the datastore crteate a
+// new key for the task.
+func (t *Task) key(c appengine.Context) *datastore.Key {
+	if t.ID == 0 {
+		return datastore.NewIncompleteKey(c, "Task", tasklistkey(c))
+	}
+	return datastore.NewKey(c, "Task", "", t.ID, tasklistkey(c))
+}
