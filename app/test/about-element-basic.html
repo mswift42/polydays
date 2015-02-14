@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>about-element-test</title>
+
+  <script src="../../bower_components/webcomponentsjs/webcomponents.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../elements/about-element/about-element.html">
+
+</head>
+<body>
+
+    <about-element></about-element>
+
+  <script>
+    suite('about-element-basic', function() {
+      test('About', function() {
+        var el = document.querySelector('about-element');
+        var txt = el.shadowRoot.querySelector('p');
+        assert.include(txt.textContent, 'simple');
+      })
+    });
+  </script>
+
+</body>
+</html>
