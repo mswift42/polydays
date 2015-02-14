@@ -3,10 +3,10 @@ package days
 import (
 	"appengine"
 	"appengine/datastore"
-	"encoding/json"
-	"fmt"
-	"io"
-	"net/http"
+	// "encoding/json"
+	// "fmt"
+	// "io"
+	// "net/http"
 	"time"
 )
 
@@ -33,4 +33,13 @@ func (t *Task) key(c appengine.Context) *datastore.Key {
 		return datastore.NewIncompleteKey(c, "Task", tasklistkey(c))
 	}
 	return datastore.NewKey(c, "Task", "", t.ID, tasklistkey(c))
+}
+
+func (t *Task) save(c appengine.Context) (*Task, error) {
+	k, err := datastore.Put(c, t.key(c), t)
+	if err != nil {
+		return nil, err
+	}
+	t.ID = k.IntID()
+	return t, nil
 }
