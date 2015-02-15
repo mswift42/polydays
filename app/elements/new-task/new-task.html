@@ -1,8 +1,16 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/ajax-form/ajax-form.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 
 <polymer-element name="new-task" attributes="">
   <template>
-    <link rel="stylesheet" href="new-task.css">
+      <link rel="stylesheet" href="new-task.css">
+      <div id="newtaskform">
+          <form is="ajax-form" action="/tasks" method="post">
+              <paper-input label="Task Summary" name="tsummary"></paper-input>
+              <button type="submit" >Save</button>
+          </form>
+      </div>
   </template>
   <script>
     (function () {
