@@ -3,10 +3,11 @@ package days
 import (
 	"appengine"
 	"appengine/datastore"
-	// "encoding/json"
+	"encoding/json"
 	// "fmt"
-	// "io"
-	// "net/http"
+	"github.com/gorilla/mux"
+	"io"
+	"net/http"
 	"time"
 )
 
@@ -42,4 +43,63 @@ func (t *Task) save(c appengine.Context) (*Task, error) {
 	}
 	t.ID = k.IntID()
 	return t, nil
+}
+
+func decodeTask(r io.ReadCloser) (*Task, error) {
+	defer r.Close()
+	var task Task
+	err := json.NewDecoder(r).Decode(&task)
+	return &task, err
+}
+
+func listTasks(c appengine.Context) ([]Task, error) {
+	tasks := []Task{}
+	keys, err := datastore.NewQuery("Task").Ancestor(tasklistkey(c)).Order("-Done").Order("Scheduled").GetAll(c, &tasks)
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < len(tasks); i++ {
+		tasks[i].ID = keys[i].IntID()
+	}
+	return tasks, nil
+}
+
+func (t *Task) delete(c appengine.Context) error {
+	return datastore.Delete(c, t.key(c))
+}
+func init() {
+	http.HandleFunc("/tasks", handler)
+}
+
+func handler(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	val, err := handleTasks(c, r)
+	if err == nil {
+		json.NewEncoder(w).Encode(val)
+	}
+	if err != nil {
+		c.Errorf("Task error : %#v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func handleTasks(c appengine.Context, r *http.Request) (interface{}, error) {
+	switch r.Method {
+	case "POST":
+		task, err := decodeTask(r.Body)
+		if err != nil {
+			return nil, err
+		}
+		return task.save(c)
+	case "GET":
+		return listTasks(c)
+	case "DELETE":
+		task, err := decodeTask(r.Body)
+		if err != nil {
+			return nil, err
+		}
+		return nil, task.delete(c)
+	}
+	return nil, fmt.Errorf("method not implemented")
 }
