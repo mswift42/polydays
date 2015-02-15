@@ -1,0 +1,25 @@
+application: polydays
+version: 1
+runtime: go
+api_version: go1
+
+handlers:
+- url: /
+  static_files: app/index.html
+  upload: app/(.*\.html)
+- url: /elements
+  static_dir: app/elements/
+- url: /bower_components
+  static_dir: bower_components
+- url: /scripts
+  static_dir: app/scripts
+- url: /styles
+  static_dir: app/styles
+# - url: /css
+#   static_dir: webapp/app/css
+# - url: /js
+#   static_dir: webapp/app/js
+# - url: /partials
+#   static_dir: webapp/app/partials
+- url: /.*
+  script: _go_app
