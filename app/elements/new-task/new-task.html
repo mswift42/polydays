@@ -1,6 +1,8 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/ajax-form/ajax-form.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input-decorator.html">
 
 <polymer-element name="new-task" attributes="">
   <template>
@@ -8,6 +10,11 @@
       <div id="newtaskform">
           <form is="ajax-form" action="/tasks" method="post">
               <paper-input label="Task Summary" name="tsummary"></paper-input>
+              <paper-input-decorator label="Task Content">
+                  <paper-autogrow-textarea>
+                      <textarea name="tcontent" id="tcontent"></textarea>
+                  </paper-autogrow-textarea>
+              </paper-input-decorator>
               <button type="submit" >Save</button>
           </form>
       </div>
