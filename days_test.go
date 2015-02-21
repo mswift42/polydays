@@ -3,6 +3,8 @@ package days
 import (
 	"appengine/aetest"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"strings"
 	"testing"
 	"time"
 )
@@ -66,4 +68,18 @@ func TestKey(t *testing.T) {
 	}
 	k2 := t2.key(c)
 	assert.Equal(k2.IntID(), 222)
+}
+func TestDecodeTask(t *testing.T) {
+	var testjson1 = `{"summary": "summary1", "content": "content1"}`
+	var testjson2 = `{"summary" : "summary2", "content": "content2"}`
+	t1, err := decodeTask(ioutil.NopCloser(strings.NewReader(testjson1)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t2, err := decodeTask(ioutil.NopCloser(strings.NewReader(testjson2)))
+	assert := assert.New(t)
+	assert.Equal(t1.Summary, "summary1")
+	assert.Equal(t1.Content, "content1")
+	assert.Equal(t2.Summary, "summary2")
+	assert.Equal(t2.Content, "content2")
 }
