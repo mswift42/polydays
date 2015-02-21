@@ -1,8 +1,15 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../single-task/single-task.html">
 
 <polymer-element name="task-list" attributes="">
   <template>
     <link rel="stylesheet" href="task-list.css">
+    <template repeat="{{t in tasks}}">
+      <single-task summary="{{t.summary}}"
+                   content="{{t.content}}"
+                   scheduled="{{t.scheduled}}">
+      </single-task>
+    </template>
   </template>
   <script>
     (function () {
