@@ -8,17 +8,19 @@
     <link rel="stylesheet" href="single-task.css">
     <div id="tsk" center >
         <div id="singletask" >
-	  <paper-shadow z="1" layout vertical on-click="{{toggle}}">
+	  <paper-shadow z="1" layout vertical>
             <div class="task" layout horizontal >
-	    <paper-checkbox id="taskstatus" flex self-center  ></paper-checkbox>
-	    <div id="tasksummary" flex four>
+	    <paper-checkbox id="taskstatus" self-center></paper-checkbox>
+	    <div id="tasksummary" flex eight self-center on-click="{{toggle}}">
 	      <p>{{summary}}</p>
             </div>
 	    </div>
             <div class="taskcontent">
               <core-collapse id="collapse">
                 <p>{{content}}</p>
-                <p>{{scheduled}}</p>
+                <template if="{{scheduled}}">
+                  <p id="dateheader">Scheduled:&nbsp<span id="date">{{scheduled}}</span></p>
+                </template>
               </core-collapse>
             </div>
 	  </paper-shadow>
