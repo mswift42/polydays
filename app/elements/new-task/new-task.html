@@ -3,26 +3,39 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-autogrow-textarea.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input-decorator.html">
+<link rel="import" href="../../../bower_components/core-ajax/core-ajax.html">
 
 <polymer-element name="new-task" attributes="">
   <template>
       <link rel="stylesheet" href="new-task.css">
       <div id="newtaskform">
-          <form is="ajax-form" action="/tasks" method="post">
-              <paper-input label="Task Summary" name="tsummary"></paper-input>
+          <form id="taskform" >
+              <paper-input label="Task Summary" name="summary" value="{{task.tasksummary}}"></paper-input>
               <paper-input-decorator label="Task Content">
                   <paper-autogrow-textarea>
-                      <textarea name="tcontent" id="tcontent"></textarea>
+                      <textarea name="content" id="tcontent" value="{{task.taskcontent}}"></textarea>
                   </paper-autogrow-textarea>
               </paper-input-decorator>
-              <button type="submit" >Save</button>
+              <button on-click="{{sendForm}}" >Save</button>
           </form>
+          <core-ajax id="ajax" auto="false" method="POST" url="/tasks" 
+                     body='{"summary":"{{task.tasksummary}}",
+                     "content":"{{task.taskcontent}}"}'>
+          </core-ajax>
+           <template repeat="{{response}}">{{data}}</template>
       </div>
   </template>
   <script>
     (function () {
       Polymer({
+        created: function() {
+          this.task = {}
+          },
         // define element prototype here
+        sendForm: function(event, detail, sender) {
+          this.$.ajax.go();
+          console.log(detail);
+          }
       });
     })();
   </script>
