@@ -64,13 +64,29 @@ func listTasks(c appengine.Context) ([]Task, error) {
 	return tasks, nil
 }
 
-func listTaskHandler(w http.ResponseWriter, r *http.Request) error {
+func listTaskHandler(w http.ResponseWriter, r *http.Request) {
 	c := appengine.NewContext(r)
 	tasks, err := listTasks(c)
 	if err != nil {
-		return http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-	return json.NewEncoder(w).Encode(tasks)
+	if err := json.NewEncoder(w).Encode(tasks); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+func tasksCreateHandler(w http.ResponseWriter, r *http.Request) {
+	c := appengine.NewContext(r)
+	task, err := decodeTask(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	saved, err := task.save(c)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	if err := json.NewEncoder(w).Encode(saved); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func (t *Task) delete(c appengine.Context) error {
@@ -79,10 +95,11 @@ func (t *Task) delete(c appengine.Context) error {
 func init() {
 	r := mux.NewRouter().StrictSlash(true)
 	r.HandleFunc("/", HomeHandler)
-	http.HandleFunc("/tasks", handler)
+	// http.HandleFunc("/tasks", handler)
 	tasks := r.Path("/tasks").Subrouter()
 	tasks.Methods("GET").HandlerFunc(listTaskHandler)
-	tasks.Methods("POST").HandlerFunc(TasksCreateHandler)
+	tasks.Methods("POST").HandlerFunc(tasksCreateHandler)
+	http.Handle("/", r)
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
