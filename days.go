@@ -64,11 +64,29 @@ func listTasks(c appengine.Context) ([]Task, error) {
 	return tasks, nil
 }
 
+func listTaskHandler(w http.ResponseWriter, r *http.Request) error {
+	c := appengine.NewContext(r)
+	tasks, err := listTasks(c)
+	if err != nil {
+		return http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	return json.NewEncoder(w).Encode(tasks)
+}
+
 func (t *Task) delete(c appengine.Context) error {
 	return datastore.Delete(c, t.key(c))
 }
 func init() {
+	r := mux.NewRouter().StrictSlash(true)
+	r.HandleFunc("/", HomeHandler)
 	http.HandleFunc("/tasks", handler)
+	tasks := r.Path("/tasks").Subrouter()
+	tasks.Methods("GET").HandlerFunc(listTaskHandler)
+	tasks.Methods("POST").HandlerFunc(TasksCreateHandler)
+}
+
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "home")
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
