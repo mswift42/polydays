@@ -54,7 +54,7 @@ func decodeTask(r io.ReadCloser) (*Task, error) {
 
 func listTasks(c appengine.Context) ([]Task, error) {
 	tasks := []Task{}
-	keys, err := datastore.NewQuery("Task").Ancestor(tasklistkey(c)).Order("-Done").Order("Scheduled").GetAll(c, &tasks)
+	keys, err := datastore.NewQuery("Task").Ancestor(tasklistkey(c)).Order("Scheduled").GetAll(c, &tasks)
 	if err != nil {
 		return nil, err
 	}
