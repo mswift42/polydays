@@ -1,7 +1,7 @@
 <link rel="import" href="../single-task/single-task.html">
 <link rel="import" href="../../../bower_components/core-ajax/core-ajax.html">
 
-<polymer-element name="task-list" attributes="">
+<polymer-element name="task-list" attributes="tasks">
   <template>
     <link rel="stylesheet" href="task-list.css">
     <core-ajax id="ajax" auto url="/tasks" handleas="json" response="{{tasks}}"></core-ajax>
@@ -15,10 +15,9 @@
   <script>
     (function () {
       Polymer({
-        tasks : [],
-        ready: function() {
-          console.log(this.tasks)
-            }
+          
+        
+        tasks : this.tasks,
         
         /* tasks : [
            {
