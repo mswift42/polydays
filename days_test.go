@@ -1,9 +1,12 @@
 package days
 
 import (
+	// "appengine"
 	"appengine/aetest"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
@@ -82,4 +85,23 @@ func TestDecodeTask(t *testing.T) {
 	assert.Equal(t1.Content, "content1")
 	assert.Equal(t2.Summary, "summary2")
 	assert.Equal(t2.Content, "content2")
+}
+
+func TestHandler(t *testing.T) {
+	inst, err := aetest.NewInstance(nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// t1, err := genTask("01/01/2015", "task1")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	uri := "/tasks"
+	resp := httptest.NewRecorder()
+	req, err := inst.NewRequest("GET", uri, nil)
+
+	http.DefaultServeMux.ServeHTTP(resp, req)
+	if _, err := ioutil.ReadAll(resp.Body); err != nil {
+		t.Fail()
+	}
 }
