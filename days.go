@@ -5,7 +5,6 @@ import (
 	"appengine/datastore"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 	"time"
@@ -64,42 +63,11 @@ func listTasks(c appengine.Context) ([]Task, error) {
 	return tasks, nil
 }
 
-func listTaskHandler(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
-	tasks, err := listTasks(c)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	if err := json.NewEncoder(w).Encode(tasks); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-func tasksCreateHandler(w http.ResponseWriter, r *http.Request) {
-	c := appengine.NewContext(r)
-	task, err := decodeTask(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	saved, err := task.save(c)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	if err := json.NewEncoder(w).Encode(saved); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
 func (t *Task) delete(c appengine.Context) error {
 	return datastore.Delete(c, t.key(c))
 }
 func init() {
-	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/", HomeHandler)
-	// http.HandleFunc("/tasks", handler)
-	tasks := r.Path("/tasks").Subrouter()
-	tasks.Methods("GET").HandlerFunc(listTaskHandler)
-	tasks.Methods("POST").HandlerFunc(tasksCreateHandler)
-	http.Handle("/", r)
+	http.HandleFunc("/tasks", handler)
 }
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
