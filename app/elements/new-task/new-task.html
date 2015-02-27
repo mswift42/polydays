@@ -26,6 +26,9 @@
   <script>
     (function () {
       Polymer({
+        today: function() {
+          return new Date().toLocaleDateString();
+          },
         
         created: function() {
           this.task = {}
@@ -34,9 +37,7 @@
         sendForm: function(event, detail, sender) {
           this.$.ajax.go();
           tl = document.querySelector('task-list');
-          tl.tasks.push({"summary":this.task.tasksummary,"content":this.task.taskcontent});
-          tl.tasks.reverse();
-          
+          tl.tasks.unshift({"summary":this.task.tasksummary,"content":this.task.taskcontent});
           }
       });
     })();
