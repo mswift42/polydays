@@ -8,7 +8,8 @@
     <template repeat="{{t in tasks}}">
       <single-task summary="{{t.summary}}"
                    content="{{t.content}}"
-                   scheduled="{{t.scheduled}}">
+                   scheduled="{{t.scheduled}}"
+                   taskid="{{t.id}}">
       </single-task>
     </template>
   </template>

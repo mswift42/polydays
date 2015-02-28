@@ -3,22 +3,20 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/core-collapse/core-collapse.html">
 
-<polymer-element name="single-task" attributes="summary content editing scheduled">
+<polymer-element name="single-task" attributes="summary content taskid editing scheduled">
   <template>
     <link rel="stylesheet" href="single-task.css">
-    <div id="tsk" center >
+    <div id={{taskid}} center >
         <div id="singletask" >
 	  <paper-shadow z="1" layout vertical>
             <div class="task" layout horizontal >
 	    <paper-checkbox id="taskstatus" self-center></paper-checkbox>
-	    <div id="tasksummary" flex eight self-center on-click="{{togglecontent}}" hidden?="{{editing}}" on-dblclick="{{showinput}}">
+	    <div id="tasksummary" flex eight self-center on-tap="{{togglecontent}}" hidden?="{{editing}}" on-dblclick="{{showinput}}">
 	      <p hidden?="{{editing}}">{{summary}}</p>
-              <paper-input value="{{summary}}" hidden?="{{!editing}}">
+              <input type="text" value="{{summary}}" hidden?="{{!editing}}"/>
               </paper-input>
             </div>
             </div>
-
-
             <div class="taskcontent">
               <core-collapse id="collapse">
                 <p>{{content}}</p>
