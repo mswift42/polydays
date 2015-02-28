@@ -18,7 +18,7 @@ type Task struct {
 	Summary   string    `json:"summary"`
 	Content   string    `json:"content"`
 	Scheduled time.Time `json:"scheduled"`
-	Status    string    `json:"done"`
+	Done      bool      `json:"done"`
 }
 
 func tasklistkey(c appengine.Context) *datastore.Key {
